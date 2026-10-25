@@ -48,8 +48,8 @@ boyutlandırması ve otomatik dorse bağlama kullanıcı tarafından oyun içind
 doğrulandı. **Convoy oturum testi henüz tamamlanmadı.** Filtreyi kullanmak
 isteyen her oyuncu eklentiyi kendi bilgisayarına kurmalıdır.
 
-Arayüzün `1.61.*` etiketi veya `mp_mod_optional` ayarı, eklentinin diğer oyun
-derlemelerini desteklediği ya da Convoy'da doğrulandığı anlamına gelmez.
+Arayüz ve eklenti bu yayında `1.61.1.9` sürümüyle sınırlandırılmıştır.
+`mp_mod_optional` ayarı Convoy'da doğrulandığı anlamına gelmez.
 Başka bir mod `ui/cargo_market.sii` dosyasını değiştiriyorsa öncelik çakışabilir.
 
 ## Kaynaktan derleme
@@ -77,6 +77,7 @@ Bu araç oyun kapalıyken yedek alır ve yalnız modun iki dosyasını kurar.
 - [Kurulum ve kullanım ayrıntıları](docs/TEST-BUILD.md)
 - [Doğrulama durumu](docs/VALIDATION.md)
 - [Dil desteği ve çeviriler](docs/localization.md)
+- [Atölye paketleme ve yayın](docs/WORKSHOP.md)
 - [Native dorse bağlama ve kabul](docs/native-acceptance.md)
 - [Sahiplik okuyucu](docs/ownership-binding.md)
 - [Arayüz ve görev ömürleri](docs/ui-binding.md)

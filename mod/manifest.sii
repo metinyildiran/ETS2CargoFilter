@@ -2,12 +2,13 @@ SiiNunit
 {
 mod_package : .cargo_filter
 {
- package_version: "0.1.0-dev"
+ package_version: "0.1.0-preview.4"
  display_name: "ETS2 Cargo Filter"
  author: "ETS2 Cargo Filter"
  category[]: "ui"
  description_file: "mod_description.txt"
- compatible_versions[]: "1.61.*"
+ icon: "mod_icon.jpg"
+ compatible_versions[]: "1.61.1.9"
  mp_mod_optional: true
 }
 }

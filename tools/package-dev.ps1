@@ -13,7 +13,7 @@ try {
     $archive = [System.IO.Compression.ZipArchive]::new($stream, [System.IO.Compression.ZipArchiveMode]::Create, $true)
     try {
         $localeIds = Get-Content -Raw -LiteralPath (Join-Path $projectRoot 'localization/locales.json') | ConvertFrom-Json
-        $packageFiles = @('manifest.sii', 'mod_description.txt', 'ui/cargo_market.sii')
+        $packageFiles = @('manifest.sii', 'mod_icon.jpg', 'mod_description.txt', 'ui/cargo_market.sii')
         foreach ($localeId in $localeIds) {
             if ($localeId -notmatch '^[a-z]{2}_[a-z]{2}$') { throw 'Invalid locale identifier.' }
             $packageFiles += "locale/$localeId/local_module.ets2cargo_filter.sii"

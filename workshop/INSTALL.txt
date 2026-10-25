@@ -1,0 +1,41 @@
+ETS2 CARGO FILTER - r4 / 0.1.0-preview.4
+Supported: ETS2 1.61.1.9, Windows 64-bit (exact executable check).
+
+ENGLISH
+1. Close ETS2 and back up your profiles/save files.
+2. Steam > ETS2 > Manage > Browse local files.
+3. Copy ETS2CargoFilter.dll into bin/win_x64/plugins inside that game folder.
+   Create the plugins folder if it does not exist. Keep other plugins intact.
+4. Choose ONE interface installation:
+   - Workshop: subscribe to ETS2 Cargo Filter and enable it in Mod Manager.
+     Do not also enable the manual .scs copy.
+   - Manual: copy ETS2CargoFilter.scs into Documents/Euro Truck Simulator 2/mod
+     (use the redirected Documents folder if yours is on OneDrive).
+     Enable ETS2 Cargo Filter in Mod Manager.
+5. Enter your career and open Cargo Market. An owned truck and trailer are required.
+6. The filter changes the list; confirming an offer assigns the matching trailer.
+
+Workshop subscriptions do NOT install DLL plugins. The DLL is required with
+either installation method. The plugin follows the language selected in ETS2.
+Convoy testing is pending. Game updates may require a new plugin release.
+To remove: close the game, disable/unsubscribe the UI, remove only
+ETS2CargoFilter.dll from plugins and the manual .scs if you installed it.
+
+TURKCE
+1. ETS2'yi kapatin ve profil/kayitlarinizi yedekleyin.
+2. Steam > ETS2 > Yonet > Yerel dosyalara goz at yoluyla oyun klasorunu acin.
+3. ETS2CargoFilter.dll dosyasini bin/win_x64/plugins klasorune kopyalayin.
+   plugins klasoru yoksa olusturun. Diger eklentilere dokunmayin.
+4. Arayuz icin TEK yontem secin:
+   - Atolye aboneligini kullanip modu Mod Yoneticisi'nde etkinlestirin, veya
+   - ETS2CargoFilter.scs dosyasini Belgeler/Euro Truck Simulator 2/mod altina
+     kopyalayip etkinlestirin. Belgeler OneDrive'daysa oradaki klasoru kullanin.
+   Atolye ve elle kurulmus .scs kopyasini ayni anda etkinlestirmeyin.
+5. Kariyere girip Kargo Piyasasi'ni acin. Kendi cekiciniz ve dorseniz gerekir.
+6. Filtre yalniz listeyi degistirir; teklif onayinda ilgili dorse atanir.
+
+Atolye DLL kurmaz; her iki yontemde de DLL zorunludur.
+Convoy testi henuz tamamlanmadi. Oyun guncellenince yeni eklenti gerekebilir.
+
+Source / updates: https://github.com/metinyildiran/ETS2CargoFilter
+Independent community mod; not developed or endorsed by SCS Software.

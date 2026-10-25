@@ -1,0 +1,38 @@
+[h1]All your trailers. One Cargo Market.[/h1]
+Browse Cargo Market offers for all trailers owned by your active profile, or choose one trailer from a selector beside the existing cargo filter. Uses the game's own interface, job list, search and sorting.
+
+[h2]Required: install the companion plugin[/h2]
+[b]Subscribing alone is NOT enough.[/b] Workshop supplies the interface and translations. The Windows plugin must be installed separately.
+
+[url=https://github.com/metinyildiran/ETS2CargoFilter/releases/tag/v0.1.0-preview.4]Download the plugin and installation package from GitHub[/url]
+
+[olist]
+[*]Close ETS2 and back up your profile/save files.
+[*]Copy ETS2CargoFilter.dll from the ZIP into the game's bin/win_x64/plugins folder. Create the plugins folder if needed. Find the game folder through Steam > Manage > Browse local files.
+[*]Subscribe here and enable ETS2 Cargo Filter in the in-game Mod Manager.
+[*]If you previously installed ETS2CargoFilter.scs manually, disable that copy. Use either the Workshop UI or the manual UI, not both.
+[*]Enter your career and open Cargo Market.
+[/olist]
+
+[h2]Features[/h2]
+[list]
+[*]All owned trailers together, or a single trailer filter.
+[*]Trailer type and registration labels, with the attached trailer marked.
+[*]Selecting a filter changes the list; confirming an offer automatically assigns the appropriate trailer.
+[*]Cargo Market access with your own truck and at least one owned trailer, even when no trailer is assigned.
+[*]Native search, cargo categories, prices, sorting and pagination.
+[*]Dropdown height follows the number of trailers, with scrolling for longer lists.
+[*]43 game languages/locales; trailer types use the game's own translations.
+[/list]
+
+[h2]Compatibility and status[/h2]
+[b]ETS2 1.61.1.9, Windows 64-bit only. Experimental release r4.[/b]
+The plugin checks the exact supported game executable and stays inactive on other builds. Linux and macOS are not supported. Game updates may require a new plugin release.
+
+Single-player listing, prices, trailer assignment and access without an assigned trailer have been checked in game. Several interface languages have also been checked. [b]Convoy session testing is still pending[/b]; every player who wants to use the filter needs the plugin on their own computer.
+
+Mods that replace ui/cargo_market.sii may conflict. Trailers in use by an employee are not automatically taken away. If an offer changes, select it again.
+
+[url=https://github.com/metinyildiran/ETS2CargoFilter]Source code, documentation and issue reports[/url]
+
+Independent community mod. Not developed or endorsed by SCS Software.

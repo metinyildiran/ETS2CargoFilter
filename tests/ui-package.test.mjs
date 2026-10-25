@@ -90,8 +90,9 @@ test('new selector uses native styling and intended dropdown/list/frame geometry
 
 test('development metadata declares optional Convoy UI and exact native requirement', () => {
   const manifest = fs.readFileSync(path.join(project, 'mod', 'manifest.sii'), 'utf8');
-  assert.match(manifest, /package_version: "0\.1\.0-dev"/);
-  assert.match(manifest, /compatible_versions\[\]: "1\.61\.\*"/);
+  assert.match(manifest, /package_version: "0\.1\.0-preview\.4"/);
+  assert.match(manifest, /compatible_versions\[\]: "1\.61\.1\.9"/);
+  assert.match(manifest, /icon: "mod_icon\.jpg"/);
   assert.match(manifest, /mp_mod_optional: true/);
   assert.match(manifest, /description_file: "mod_description\.txt"/);
   assert.match(generateLocalization().get('mod_description.txt').toString('utf8'), /1\.61\.1\.9/);
@@ -102,11 +103,11 @@ test('build writes only loose UI and authored metadata and is repeatable', integ
   try {
     buildUi({ gameDir, outputDir });
     buildUi({ gameDir, outputDir });
-    assert.deepEqual(fs.readdirSync(outputDir).sort(), ['locale','manifest.sii','mod_description.txt','ui',
+    assert.deepEqual(fs.readdirSync(outputDir).sort(), ['locale','manifest.sii','mod_icon.jpg','mod_description.txt','ui',
       ...supportedLocales.map(locale => `mod_description.${locale}.txt`)].sort());
     assert.deepEqual(fs.readdirSync(path.join(outputDir, 'ui')), ['cargo_market.sii']);
     assert.deepEqual(fs.readFileSync(path.join(outputDir, 'ui/cargo_market.sii')), generated);
-    for (const name of ['manifest.sii'])
+    for (const name of ['manifest.sii', 'mod_icon.jpg'])
       assert.deepEqual(fs.readFileSync(path.join(outputDir, name)), fs.readFileSync(path.join(project, 'mod', name)));
     for (const [name, bytes] of generateLocalization())
       assert.deepEqual(fs.readFileSync(path.join(outputDir, name)), bytes, name);

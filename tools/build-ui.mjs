@@ -76,7 +76,7 @@ export function readVanillaUi(gameDir = defaultGameDir) {
 export function buildUi({ gameDir = defaultGameDir, outputDir = path.join(projectRoot, 'build', 'mod') } = {}) {
   const ui = generateUi(readVanillaUi(gameDir));
   // Read authored metadata before creating output, so missing inputs fail cleanly.
-  const metadata = ['manifest.sii'].map(name =>
+  const metadata = ['manifest.sii', 'mod_icon.jpg'].map(name =>
     [name, fs.readFileSync(path.join(projectRoot, 'mod', name))]);
   const localized = generateLocalization();
   fs.mkdirSync(path.join(outputDir, 'ui'), { recursive: true });
