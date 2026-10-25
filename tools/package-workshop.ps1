@@ -21,6 +21,10 @@ $utf8 = [System.Text.UTF8Encoding]::new($false)
 $versions = @'
 SiiNunit
 {
+package_version_info : .universal
+{
+ package_name: "unsupported"
+}
 package_version_info : .ets2_16119
 {
  package_name: "ets2_16119"
@@ -29,6 +33,11 @@ package_version_info : .ets2_16119
 }
 '@
 [System.IO.File]::WriteAllText((Join-Path $content 'versions.sii'), $versions, $utf8)
+$fallback = Join-Path $content 'unsupported'
+[System.IO.Directory]::CreateDirectory($fallback) | Out-Null
+Copy-Item -LiteralPath $manifestPath -Destination $fallback
+Copy-Item -LiteralPath (Join-Path $package 'mod_icon.jpg') -Destination $fallback
+Copy-Item -LiteralPath (Join-Path $projectRoot 'workshop/unsupported.txt') -Destination (Join-Path $fallback 'mod_description.txt')
 Copy-Item -LiteralPath (Join-Path $projectRoot 'workshop/preview.jpg') -Destination $output
 Copy-Item -LiteralPath (Join-Path $projectRoot 'workshop/description.txt') -Destination $output
 

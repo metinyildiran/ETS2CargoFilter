@@ -9,6 +9,8 @@ This experimental r4 release includes:
 
 **The DLL is required. Subscribing to the Workshop UI alone does not install it.**
 
+[Subscribe to the UI on Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3827220762)
+
 Download the ZIP, close the game, back up your saves and copy `ETS2CargoFilter.dll` to the game's `bin/win_x64/plugins` directory. Use either the included `.scs` in your user mod directory or the Workshop subscription, and enable that UI in Mod Manager. Full instructions are in `INSTALL.txt`.
 
 The plugin verifies the exact supported executable and will not activate on another game build. **Convoy session testing is pending.** Single-player functionality and several UI languages have been checked in game; all 43 translations have automated catalog validation.

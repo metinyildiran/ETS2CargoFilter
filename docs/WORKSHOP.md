@@ -8,6 +8,11 @@ and description. Do not include the DLL inside the Workshop content package.
 Current release: **v0.1.0-preview.4 / r4**, exact ETS2 **1.61.1.9**.
 Convoy session testing remains pending.
 
+Published item: https://steamcommunity.com/sharedfiles/filedetails/?id=3827220762
+Item ID: **3827220762**. Published publicly on 2026-10-25 through SCS Workshop
+Uploader 1.61.2 after successful validation. Future uploads must update this
+item rather than creating a new one.
+
 ## Build
 
 ```powershell
@@ -26,6 +31,8 @@ Outputs:
 - `dist/workshop/content/versions.sii`: exact game-version mapping.
 - `dist/workshop/content/ets2_16119/`: UI, 43 locales, localized descriptions,
   icon and Workshop manifest (without display_name/compatible_versions).
+- `dist/workshop/content/unsupported/`: required universal fallback, containing
+  only an explanatory description, manifest and icon; no functional game files.
 - `dist/workshop/preview.jpg`: 640 x 360 JPG, below 1 MB.
 - `dist/ETS2CargoFilter-1.61.1.9-r4.zip`: manual UI + plugin + instructions/licenses.
 - `dist/SHA256SUMS-r4.txt`: ZIP digest; individual digests are inside the ZIP.

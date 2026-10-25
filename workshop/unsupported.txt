@@ -1,0 +1,14 @@
+ETS2 Cargo Filter - unsupported game version
+
+This release supports ETS2 1.61.1.9 on Windows 64-bit only.
+Your current game version does not match the supported version.
+
+This is an information-only package. It contains no game interface changes
+or translations, and it does not enable the cargo filter on this version.
+The native plugin also checks the exact supported game executable.
+
+Check for a compatible release:
+https://github.com/metinyildiran/ETS2CargoFilter/releases
+
+Workshop provides the interface only. The companion DLL must be installed
+separately in the game's bin/win_x64/plugins folder.

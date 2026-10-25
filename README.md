@@ -8,6 +8,11 @@ seçicisi ekler. Windows x64 eklentisi ve `.scs` arayüz paketinden oluşur.
 
 [Hazır kurulum paketleri](https://github.com/metinyildiran/ETS2CargoFilter/releases)
 
+[Steam Atölyesi](https://steamcommunity.com/sharedfiles/filedetails/?id=3827220762)
+üzerinden arayüze abone olabilirsiniz. **Atölye DLL kurmaz:** aşağıdaki
+eklenti kurulumunu ayrıca yapın. Atölye kullanırken elle kurulmuş `.scs`
+kopyasını etkinleştirmeyin; iki arayüz paketinden yalnız birini kullanın.
+
 **Desteklenen sürüm: ETS2 1.61.1.9, Windows 64-bit.** Eklenti tam EXE
 SHA-256 kontrolü yapar; farklı oyun derlemesinde etkinleşmez.
 
