@@ -1,0 +1,13 @@
+SiiNunit
+{
+mod_package : .cargo_filter
+{
+ package_version: "0.1.0-dev"
+ display_name: "Owned Trailer Cargo Filter (Development)"
+ author: "ETS2 Cargo Filter"
+ category[]: "ui"
+ description_file: "mod_description.txt"
+ compatible_versions[]: "1.61.*"
+ mp_mod_optional: true
+}
+}

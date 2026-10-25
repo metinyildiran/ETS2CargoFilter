@@ -1,0 +1,10 @@
+.work/
+tools/scs-packer/
+tools/*.zip
+build/
+dist/
+docs/RUNTIME-TEST.md
+.env
+.env.*
+*.log
+.vs/
