@@ -1,5 +1,6 @@
 #include "native_ownership.hpp"
 #include "native_host.hpp"
+#include "ui_text.hpp"
 
 #include <algorithm>
 #include <array>
@@ -105,23 +106,16 @@ std::string read_body_type(std::uintptr_t definition) {
 }
 
 std::string body_type_name(const std::string& token) {
-    // Display names from shipped locale/tr_tr/localization.sui, section
-    // "Trailer body type names". Keep distinct body types (e.g. insulated and
-    // refrigerated) rather than collapsing them to the cargo-filter category.
-    struct Name { std::string_view token, label; };
-    static constexpr Name names[] = {
-        {"chemtank", "Kimyasal Yük Tankeri"}, {"container", "Konteyner Taşıyıcısı"},
-        {"curtainside", "Perdeli"}, {"dryvan", "Kuru Yük"}, {"dumper", "Damper"},
-        {"flatbed", "Flatbed"}, {"flatbed_brck", "Tuğla"},
-        {"flatbed_cont", "Flatbed / Konteyner"}, {"foodtank", "Gıda Tankeri"},
-        {"fueltank", "Akaryakıt Tankı"}, {"gastank", "Gaz Tankı"},
-        {"insulated", "Yalıtımlı"}, {"livestock", "Canlı Çiftlik Hayvanı"},
-        {"log", "Tomruk"}, {"lowbed", "Low Bed"}, {"lowboy", "Low Loader"},
-        {"refrigerated", "Frigorifik"}, {"silo", "Silo"},
-        {"inloader", "İç Yüklemeli"}
+    // All these native localization keys exist in all 43 shipped locales.
+    // Keep the token until UI rendering so the game's selected language wins.
+    static constexpr std::string_view types[] = {
+        "chemtank", "container", "curtainside", "dryvan", "dumper", "flatbed",
+        "flatbed_brck", "flatbed_cont", "foodtank", "fueltank", "gastank",
+        "insulated", "livestock", "log", "lowbed", "lowboy", "refrigerated",
+        "silo", "inloader"
     };
-    for (const auto& name : names) if (name.token == token) return std::string(name.label);
-    if (token.empty()) return "Dorse (tür bilinmiyor)";
+    for (const auto type : types) if (type == token) return "@@" + token + "@@";
+    if (token.empty()) return ets2::native::ui_text::unknown_type;
     // Custom body types retain their actual token, with only display casing and
     // separators changed. Never infer a vanilla type from a mod filename.
     auto result = token;

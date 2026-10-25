@@ -28,6 +28,9 @@ Mevcut arama, tür filtresi, şehir kısıtı ve sıralama yolları kullanılır
 
 Dorse adları tür + plaka biçimindedir. Açılır liste satır sayısına göre kısalır;
 çok fazla dorse varsa mevcut maksimum yükseklikte kaydırılır.
+Filtre metinleri ve Mod Yöneticisi açıklaması oyunun seçili dilini izler;
+43 dil/bölge seçeneği desteklenir. Dorse türleri oyunun kendi çevirilerini kullanır.
+Yeni dil dosyaları nedeniyle güncellerken hem DLL hem de .scs dosyasını değiştirin.
 
 ## İlk oyun testi
 

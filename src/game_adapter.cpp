@@ -4,6 +4,8 @@
 #include "native_rows.hpp"
 #include "native_ui.hpp"
 #include "native_accept.hpp"
+#include "native_market_access.hpp"
+#include "ui_text.hpp"
 
 #include <algorithm>
 #include <array>
@@ -20,6 +22,7 @@ using namespace cargo_filter::native;
 using Address = std::uintptr_t;
 constexpr std::size_t handler_table = 0x23a03e8;
 constexpr std::size_t provider_table = 0x23a03b8;
+constexpr std::size_t desktop_table = 0x236f220;
 
 struct BatchRecord {
     Address trailer = 0;
@@ -40,7 +43,8 @@ struct TaskContext {
 };
 struct Adapter {
     HostContext host;
-    std::array<VtableSlotPatch, 9> patches;
+    std::array<VtableSlotPatch, 11> patches;
+    CargoMenuAccess menu_access;
     std::unordered_map<Address, Screen> screens; // game main thread only
     std::mutex tasks_mutex;
     std::unordered_map<Address, std::shared_ptr<TaskContext>> tasks;
@@ -69,14 +73,15 @@ bool supported_scheduler() noexcept {
 }
 
 void populate(Address handler, Screen& screen) {
-    std::vector<std::string> labels{"Tüm dorselerim"};
+    std::vector<std::string> labels{ui_text::all_trailers};
     for (const auto& trailer : screen.ownership.trailers) {
-        labels.push_back(trailer.label + (trailer.address == screen.ownership.active_trailer ? " (bağlı)" : ""));
+        labels.push_back(trailer.label + (trailer.address == screen.ownership.active_trailer
+            ? std::string(" (") + ui_text::attached + ")" : ""));
     }
     screen.populating = true;
     const auto success = NativeUi(adapter->host).populate_trailer_dropdown(handler, labels, screen.selection);
     screen.populating = false;
-    if (!success) screen.status = "Dorse seçicisi yüklenemedi.";
+    if (!success) screen.status = ui_text::selector_failed;
 }
 
 void on_init(Address handler) {
@@ -86,10 +91,10 @@ void on_init(Address handler) {
         auto& screen = adapter->screens[handler];
         screen.ownership = read_ownership(adapter->host.module_base);
         if (screen.ownership.status != OwnershipStatus::ready)
-            screen.status = "Profilin dorse listesi okunamadı.";
+            screen.status = ui_text::ownership_failed;
         populate(handler, screen);
         if (!screen.status && !NativeUi(adapter->host).request_rebuild(handler))
-            screen.status = "İş listesi yenilenemedi.";
+            screen.status = ui_text::refresh_failed;
         char message[128]{};
         std::snprintf(message, sizeof(message), "Cargo screen initialized; owned trailers=%zu.", screen.ownership.trailers.size());
         if (adapter->host.log) adapter->host.log(LogLevel::info, message);
@@ -110,7 +115,7 @@ bool on_event(Address handler, Address control, std::uint32_t event, Address pay
                     // Native rebuild flag path retains the existing sort setting
                     // and waits for pending provider work before replacing rows.
                     if (!NativeUi(adapter->host).request_rebuild(handler))
-                        screen.status = "İş listesi yenilenemedi.";
+                        screen.status = ui_text::refresh_failed;
                 }
                 return true;
             }
@@ -141,7 +146,7 @@ Address on_factory(Address handler) {
         if (!supported_scheduler() || !same_profile || !selection_exists || !safe_read(task + 0x350, source)
             || !safe_read(snapshot.economy + 0x19c, minute)) {
             context->include_active = false;
-            screen.status = "Dorse listesi değişti. Piyasayı yeniden açın.";
+            screen.status = ui_text::ownership_changed;
         } else {
             for (const auto& trailer : snapshot.trailers) {
                 if (trailer.address == snapshot.active_trailer || (selected_trailer && trailer.address != selected_trailer)) continue;
@@ -155,13 +160,13 @@ Address on_factory(Address handler) {
                 // Retired batches remain alive while old native rows can refer to
                 // them. Bound memory until the screen is closed and rows released.
                 if (screen.batches.size() >= 128) {
-                    screen.status = "Dorse tekliflerini yenilemek için piyasayı yeniden açın.";
+                    screen.status = ui_text::reopen_market;
                     break;
                 }
                 auto batch = std::make_shared<NativeOfferBatch>(adapter->host);
                 if (!batch->generate(snapshot, trailer.address, source)) {
                     log_error(batch->error().c_str());
-                    screen.status = "Diğer dorse teklifleri oluşturulamadı. Eklenti günlüğünü kontrol edin.";
+                    screen.status = ui_text::offers_failed;
                     break;
                 }
                 screen.batches.push_back({trailer.address, source, minute, batch});
@@ -174,7 +179,7 @@ Address on_factory(Address handler) {
         std::lock_guard lock(adapter->tasks_mutex);
         adapter->tasks.emplace(task, std::move(context));
     } catch (...) {
-        screen.status = "Dorse teklifleri hazırlanırken hata oluştu.";
+        screen.status = ui_text::prepare_failed;
         log_error("Cargo provider preparation failed.");
     }
     return task;
@@ -264,13 +269,13 @@ bool on_accept(Address handler) {
                                 "Selected trailer attached; matching native company offer ready for acceptance.");
                             return function<bool (*)(Address)>(0x11a2c80)(handler);
                         }
-                        const char* message = "Dorse bağlanamadı. Piyasayı yeniden açın.";
+                        const char* message = ui_text::attach_failed;
                         if (result == AttachResult::busy)
-                            message = "Dorse başka bir işte kullanılıyor. Önce mevcut işi tamamlayın.";
+                            message = ui_text::busy;
                         else if (result == AttachResult::offer_changed)
-                            message = "Dorse bağlandı; teklifler değişti. Piyasayı yeniden açıp işi seçin.";
+                            message = ui_text::offer_changed;
                         else if (result == AttachResult::unavailable)
-                            message = "Dorse veya teklif artık kullanılabilir değil. Piyasayı yeniden açın.";
+                            message = ui_text::unavailable;
                         log_error(message);
                         const auto screen_now = adapter->screens.find(handler);
                         if (screen_now != adapter->screens.end()) screen_now->second.status = message;
@@ -307,6 +312,22 @@ void on_update(Address handler) {
         static_cast<void>(NativeUi(adapter->host).set_status(handler, found->second.status));
 }
 
+void refresh_menu_access(bool force) noexcept {
+    if (!main_thread()) return;
+    try { adapter->menu_access.refresh(adapter->host, force); }
+    catch (...) { log_error("Cargo Market availability refresh failed."); }
+}
+
+void on_desktop_init(Address handler) {
+    function<void (*)(Address)>(0xfe4e80)(handler);
+    refresh_menu_access(true);
+}
+
+void on_desktop_update(Address handler) {
+    function<void (*)(Address)>(0xfe58b0)(handler);
+    refresh_menu_access(false);
+}
+
 struct HookDefinition { std::size_t slot; std::size_t original; Address replacement; };
 }
 
@@ -322,7 +343,9 @@ bool adapter_initialize(const HostContext& host) {
         HookDefinition{provider_table + 8, 0x11a32b0, reinterpret_cast<Address>(&on_execute)},
         HookDefinition{provider_table, 0x11a3270, reinterpret_cast<Address>(&on_task_destroy)},
         HookDefinition{handler_table + 8, 0x11a2910, reinterpret_cast<Address>(&on_screen_close)},
-        HookDefinition{handler_table + 0x1f0, 0x11a2a10, reinterpret_cast<Address>(&on_update)}
+        HookDefinition{handler_table + 0x1f0, 0x11a2a10, reinterpret_cast<Address>(&on_update)},
+        HookDefinition{desktop_table + 0xc8, 0xfe4e80, reinterpret_cast<Address>(&on_desktop_init)},
+        HookDefinition{desktop_table + 0x60, 0xfe58b0, reinterpret_cast<Address>(&on_desktop_update)}
     };
     // Validate every slot before modifying any one of them.
     for (const auto& hook : definitions) {
@@ -349,7 +372,7 @@ bool adapter_initialize(const HostContext& host) {
             return false;
         }
     }
-    if (host.log) host.log(LogLevel::info, "Cargo filter revision 2 initialized for ETS2 1.61.1.9; type labels, fitted list, native trailer acceptance.");
+    if (host.log) host.log(LogLevel::info, "Cargo filter revision 4 initialized for ETS2 1.61.1.9; native localization for all 43 game locales.");
     return true;
 }
 

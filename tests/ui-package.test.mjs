@@ -6,6 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildUi, generateUi, parseBlocks, readVanillaUi, defaultGameDir,
   rootName, controlName } from '../tools/build-ui.mjs';
+import { generateLocalization, supportedLocales } from '../tools/build-localization.mjs';
 
 const project = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const gameDir = process.env.ETS2_GAME_DIR || defaultGameDir;
@@ -93,7 +94,7 @@ test('development metadata declares optional Convoy UI and exact native requirem
   assert.match(manifest, /compatible_versions\[\]: "1\.61\.\*"/);
   assert.match(manifest, /mp_mod_optional: true/);
   assert.match(manifest, /description_file: "mod_description\.txt"/);
-  assert.match(fs.readFileSync(path.join(project, 'mod', 'mod_description.txt'), 'utf8'), /1\.61\.1\.9/);
+  assert.match(generateLocalization().get('mod_description.txt').toString('utf8'), /1\.61\.1\.9/);
 });
 
 test('build writes only loose UI and authored metadata and is repeatable', integration, () => {
@@ -101,11 +102,14 @@ test('build writes only loose UI and authored metadata and is repeatable', integ
   try {
     buildUi({ gameDir, outputDir });
     buildUi({ gameDir, outputDir });
-    assert.deepEqual(fs.readdirSync(outputDir).sort(), ['manifest.sii','mod_description.txt','ui']);
+    assert.deepEqual(fs.readdirSync(outputDir).sort(), ['locale','manifest.sii','mod_description.txt','ui',
+      ...supportedLocales.map(locale => `mod_description.${locale}.txt`)].sort());
     assert.deepEqual(fs.readdirSync(path.join(outputDir, 'ui')), ['cargo_market.sii']);
     assert.deepEqual(fs.readFileSync(path.join(outputDir, 'ui/cargo_market.sii')), generated);
-    for (const name of ['manifest.sii', 'mod_description.txt'])
+    for (const name of ['manifest.sii'])
       assert.deepEqual(fs.readFileSync(path.join(outputDir, name)), fs.readFileSync(path.join(project, 'mod', name)));
+    for (const [name, bytes] of generateLocalization())
+      assert.deepEqual(fs.readFileSync(path.join(outputDir, name)), bytes, name);
   } finally {
     // Only remove the exact directory returned by mkdtemp, beneath the temp root.
     assert.equal(path.dirname(path.resolve(outputDir)), path.resolve(os.tmpdir()));

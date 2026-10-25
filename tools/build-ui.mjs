@@ -5,6 +5,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { openArchive } from './read-hashfs.mjs';
+import { generateLocalization } from './build-localization.mjs';
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const defaultGameDir = 'D:\\SteamLibrary\\steamapps\\common\\Euro Truck Simulator 2';
@@ -75,12 +76,17 @@ export function readVanillaUi(gameDir = defaultGameDir) {
 export function buildUi({ gameDir = defaultGameDir, outputDir = path.join(projectRoot, 'build', 'mod') } = {}) {
   const ui = generateUi(readVanillaUi(gameDir));
   // Read authored metadata before creating output, so missing inputs fail cleanly.
-  const metadata = ['manifest.sii', 'mod_description.txt'].map(name =>
+  const metadata = ['manifest.sii'].map(name =>
     [name, fs.readFileSync(path.join(projectRoot, 'mod', name))]);
+  const localized = generateLocalization();
   fs.mkdirSync(path.join(outputDir, 'ui'), { recursive: true });
   fs.writeFileSync(path.join(outputDir, resourcePath), ui);
   for (const [name, bytes] of metadata) fs.writeFileSync(path.join(outputDir, name), bytes);
-  return { outputDir: path.resolve(outputDir), uiBytes: ui.length };
+  for (const [name, bytes] of localized) {
+    fs.mkdirSync(path.dirname(path.join(outputDir, name)), { recursive: true });
+    fs.writeFileSync(path.join(outputDir, name), bytes);
+  }
+  return { outputDir: path.resolve(outputDir), uiBytes: ui.length, localizedFiles: localized.size };
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

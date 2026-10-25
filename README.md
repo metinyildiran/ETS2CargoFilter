@@ -16,7 +16,7 @@ SHA-256 kontrolü yapar; farklı oyun derlemesinde etkinleşmez.
    `bin/win_x64/plugins` dizinine kopyalayın. Klasör yoksa oluşturun.
 3. `ETS2CargoFilter.scs` dosyasını `Belgeler/Euro Truck Simulator 2/mod`
    dizinine kopyalayın. Belgeler OneDrive'a taşınmışsa oradaki ETS2 dizinini kullanın.
-4. Mod Yöneticisi'nde **Owned Trailer Cargo Filter (Development)** modunu
+4. Mod Yöneticisi'nde **ETS2 Cargo Filter** modunu
    etkinleştirin ve kariyerinize girin.
 5. Kendi dorselerinizle çalışılan Kargo/Yük Piyasası'nı açın.
 
@@ -26,7 +26,11 @@ oyun klasörünü bulabilirsiniz. `.scs` tek başına yeterli değildir.
 ## Özellikler
 
 - Profildeki bütün dorselere uygun teklifler veya tek dorseye göre filtreleme.
+- Kendi çekicisi ve en az bir dorsesi olan profillerde, dorse atanmamış olsa da
+  Kargo Piyasası düğmesine erişim.
 - Dorse türü + plaka etiketleri ve bağlı dorse işareti.
+- Oyunun seçili dilini izleyen 43 dil/bölge desteği; filtre, durum mesajları ve
+  Mod Yöneticisi açıklaması çevrilidir. Dorse türleri oyunun kendi çevirilerini kullanır.
 - Satır sayısına göre açılır liste yüksekliği; uzun listelerde kaydırma.
 - Oyunun mevcut iş listesi, sıralaması, arama ve yük türü filtresi.
 - İşi onaylayınca ilgili dorseyi native motor üzerinden otomatik bağlama.
@@ -56,7 +60,7 @@ SDK 1.16 başlıkları kendi lisansıyla `vendor/` altında bulunur.
 ```powershell
 ./tools/build-native.ps1
 ./tools/package-dev.ps1 -GameDirectory 'D:\SteamLibrary\steamapps\common\Euro Truck Simulator 2' -SkipBuild
-node --test tests/hashfs.test.mjs tests/ui-package.test.mjs
+node --test tests/hashfs.test.mjs tests/ui-package.test.mjs tests/localization.test.mjs
 ```
 
 Arayüzü üretmek için desteklenen oyunun yerel kurulumu gerekir; oyun arşivleri
@@ -72,6 +76,7 @@ Bu araç oyun kapalıyken yedek alır ve yalnız modun iki dosyasını kurar.
 
 - [Kurulum ve kullanım ayrıntıları](docs/TEST-BUILD.md)
 - [Doğrulama durumu](docs/VALIDATION.md)
+- [Dil desteği ve çeviriler](docs/localization.md)
 - [Native dorse bağlama ve kabul](docs/native-acceptance.md)
 - [Sahiplik okuyucu](docs/ownership-binding.md)
 - [Arayüz ve görev ömürleri](docs/ui-binding.md)

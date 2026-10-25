@@ -3,7 +3,7 @@ SiiNunit
 mod_package : .cargo_filter
 {
  package_version: "0.1.0-dev"
- display_name: "Owned Trailer Cargo Filter (Development)"
+ display_name: "ETS2 Cargo Filter"
  author: "ETS2 Cargo Filter"
  category[]: "ui"
  description_file: "mod_description.txt"

@@ -64,22 +64,29 @@ int main() {
     check(snapshot.trailers[0].definition == definition_a.address()
           && snapshot.trailers[1].definition == definition_b.address(),
           "per-trailer definitions are retained exactly without type inference");
-    check(snapshot.trailers[0].label == "Kuru Yük - 34 TEST 01" && snapshot.trailers[1].label == "Frigorifik",
-          "actual Turkish type names replace ordinals and plate markup is stripped");
+    check(snapshot.trailers[0].label == "@@dryvan@@ - 34 TEST 01" && snapshot.trailers[1].label == "@@refrigerated@@",
+          "native locale tokens replace ordinals and plate markup is stripped");
     check(snapshot.trailers[0].body_type == "dryvan" && snapshot.trailers[1].body_type == "refrigerated",
           "native body tokens are decoded exactly including twelve-character names");
     check(snapshot.trailers[0].is_private && !snapshot.trailers[1].is_private
           && snapshot.trailers[0].session_id != snapshot.trailers[1].session_id,
           "privacy does not hide ownership and exact session identities differ");
 
+    put(vehicles.address(), 0x48, std::uintptr_t{0});
+    const auto unassigned = read_ownership(module);
+    check(unassigned.status == OwnershipStatus::ready && unassigned.active_trailer == 0
+          && unassigned.player_vehicles == vehicles.address() && unassigned.trailers.size() == 2,
+          "all owned trailers remain available when no trailer is assigned");
+    put(vehicles.address(), 0x48, b.address());
+
     put(definition_a.address(), 0x48, std::uint64_t{0x815717e830ef4c37});
-    check(read_ownership(module).trailers[0].type_name == "Perdeli",
+    check(read_ownership(module).trailers[0].type_name == "@@curtainside@@",
           "token flag bit does not change the actual curtainside type");
     put(definition_a.address(), 0x48, std::uint64_t{0x390106bfa35f});
-    check(read_ownership(module).trailers[0].type_name == "Yalıtımlı",
+    check(read_ownership(module).trailers[0].type_name == "@@insulated@@",
           "insulated remains distinct from refrigerated despite shared filter category");
     put(definition_a.address(), 0x48, std::uint64_t{0x65798c5acd54c810});
-    check(read_ownership(module).trailers[0].type_name == "Flatbed / Konteyner",
+    check(read_ownership(module).trailers[0].type_name == "@@flatbed_cont@@",
           "underscore-bearing known token uses shipped display name");
     put(definition_a.address(), 0x48, std::uint64_t{0x184d85301d});
     const auto custom = read_ownership(module);
@@ -90,14 +97,14 @@ int main() {
     put(b.address(), 0x78, reinterpret_cast<std::uintptr_t>(plate_b.data()));
     put(b.address(), 0x80, static_cast<std::uint32_t>(plate_b.size()));
     const auto duplicates = read_ownership(module);
-    check(duplicates.trailers[0].label == "Frigorifik - 34 TEST 01"
-          && duplicates.trailers[1].label == "Frigorifik - 06 TEST 02",
+    check(duplicates.trailers[0].label == "@@refrigerated@@ - 34 TEST 01"
+          && duplicates.trailers[1].label == "@@refrigerated@@ - 06 TEST 02",
           "plates distinguish multiple trailers with the same real type");
     put(definition_a.address(), 0x48, std::uint64_t{38});
     check(read_ownership(module).trailers[0].body_type.empty(),
           "embedded token terminator cannot produce a misleading type");
     put(definition_a.address(), 0x48, std::uint64_t{0});
-    check(read_ownership(module).trailers[0].label == "Dorse (tür bilinmiyor) - 34 TEST 01",
+    check(read_ownership(module).trailers[0].label == "@@ets2cf_unknown_type@@ - 34 TEST 01",
           "missing body type has explicit fallback and keeps identifying plate");
     put(definition_a.address(), 0x48, std::uint64_t{0x72d25952});
     put(definition_a.address(), 8, std::uint32_t{1});
@@ -105,7 +112,7 @@ int main() {
           "stale trailer definition is not read as a valid type");
     put(definition_a.address(), 8, std::uint32_t{0x80000001});
     put(a.address(), 0x1a0, std::uintptr_t{1});
-    check(read_ownership(module).trailers[0].type_name == "Dorse (tür bilinmiyor)",
+    check(read_ownership(module).trailers[0].type_name == "@@ets2cf_unknown_type@@",
           "unreadable definition keeps snapshot safe without invented type");
 
     put(a.address(), 0x1a0, std::uintptr_t{0});

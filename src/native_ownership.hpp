@@ -24,7 +24,8 @@ struct OwnedTrailer {
     std::string session_id;
     std::string label;
     // Actual trailer_definition.body_type, decoded from its native SCS token.
-    // Empty when unavailable; type_name is display text, not a compatibility rule.
+    // Empty when unavailable; type_name/label contain UI localization tokens
+    // for built-in types, and plain text for custom types. Not compatibility rules.
     std::string body_type;
     std::string type_name;
     std::string raw_license_plate;
